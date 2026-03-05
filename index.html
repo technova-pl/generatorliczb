@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Tożsamości i Dokumentów</title>
+    <style>
+        :root {
+            --primary: #dc2626;
+            --secondary: #2563eb;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        h2 { margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; font-size: 1.2rem; }
+
+        /* Generator Styles */
+        .profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .avatar { font-size: 3rem; background: #f8fafc; padding: 10px; border-radius: 50%; }
+        
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .item { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; display: block; }
+        .val { font-family: 'monospace'; font-size: 1rem; color: var(--secondary); font-weight: 800; }
+        .full { grid-column: span 2; }
+
+        /* Validator Styles */
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; box-sizing: border-box; }
+        #status { padding: 12px; border-radius: 10px; font-weight: bold; text-align: center; display: none; margin-bottom: 10px; }
+        .valid { background: #dcfce7; color: #16a34a; display: block !important; }
+        .invalid { background: #fee2e2; color: #dc2626; display: block !important; }
+
+        button {
+            width: 100%; padding: 15px; background: var(--primary); color: white; border: none;
+            border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: 0.3s;
+        }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="profile-header">
+            <div id="g-avatar" class="avatar">👤</div>
+            <div>
+                <div id="g-name" style="font-size: 1.4rem; font-weight: 800;">Kliknij Generuj</div>
+                <div id="g-blood" style="color: var(--primary); font-weight: bold;">Grupa krwi: --</div>
+            </div>
+        </div>
+
+        <div class="data-grid">
+            <div class="item full"><span class="label">PESEL</span><span id="g-pesel" class="val">----------</span></div>
+            <div class="item"><span class="label">NIP</span><span id="g-nip" class="val">----------</span></div>
+            <div class="item"><span class="label">KRS</span><span id="g-krs" class="val">----------</span></div>
+            <div class="item"><span class="label">REGON 9</span><span id="g-regon9" class="val">---------</span></div>
+            <div class="item"><span class="label">REGON 14</span><span id="g-regon14" class="val">--------------</span></div>
+        </div>
+        <br>
+        <button onclick="generateEverything()">Generuj Tożsamość</button>
+    </div>
+
+    <div class="card">
+        <h2>Walidator Danych</h2>
+        <input type="text" id="v-input" placeholder="Wklej PESEL, NIP, KRS lub REGON..." oninput="validate()">
+        <div id="status"></div>
+        <div id="v-details" style="font-size: 0.9rem; color: #475569;"></div>
+    </div>
+</div>
+
+<script>
+    // --- KONFIGURACJA DANYCH ---
+    const namesM = ["Adam", "Piotr", "Marek", "Jan", "Tomasz"];
+    const namesF = ["Anna", "Zofia", "Ewa", "Katarzyna", "Maria"];
+    const lastnames = ["Nowak", "Kowalski", "Wiśniewski", "Wójcik", "Zieliński"];
+    const bloodTypes = [
+        { t: 'A Rh+', w: 32 }, { t: '0 Rh+', w: 31 }, { t: 'B Rh+', w: 15 },
+        { t: 'AB Rh+', w: 7 }, { t: '0 Rh-', w: 6 }, { t: 'A Rh-', w: 6 },
+        { t: 'B Rh-', w: 2 }, { t: 'AB Rh-', w: 1 }
+    ];
+
+    // --- LOGIKA OBLICZENIOWA ---
+    function getChecksum(digits, weights) {
+        return digits.reduce((sum, d, i) => sum + d * weights[i], 0);
+    }
+
+    function genPESEL() {
+        const date = new Date(1950 + Math.random() * 74, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+        let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
+        if (year >= 2000) month += 20;
+        const base = [
+            Math.floor((year % 100) / 10), year % 10,
+            Math.floor(month / 10), month % 10,
+            Math.floor(day / 10), day % 10,
+            ...Array.from({length: 4}, () => Math.floor(Math.random() * 10))
+        ];
+        const w = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+        base.push((10 - (getChecksum(base, w) % 10)) % 10);
+        return base.join('');
+    }
+
+    function genNIP() {
+        const w = [6, 5, 7, 2, 3, 4, 5, 6, 7];
+        while(true) {
+            const d = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
+            const sum = getChecksum(d, w);
+            if (sum % 11 !== 10) return d.join('') + (sum % 11);
+        }
+    }
+
+    function genRegonSet() {
+        const w9 = [8, 9, 2, 3, 4, 5, 6, 7];
+        const d9 = Array.from({length: 8}, () => Math.floor(Math.random() * 10));
+        let c9 = getChecksum(d9, w9) % 11;
+        d9.push(c9 === 10 ? 0 : c9);
+        
+        const d14 = [...d9, ...Array.from({length: 4}, () => Math.floor(Math.random() * 10))];
+        const w14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8];
+        let c14 = getChecksum(d14, w14) % 11;
+        d14.push(c14 === 10 ? 0 : c14);
+
+        return { r9: d9.join(''), r14: d14.join('') };
+    }
+
+    // --- FUNKCJE GŁÓWNE ---
+    function generateEverything() {
+        const isFemale = Math.random() > 0.5;
+        const name = isFemale ? namesF[Math.floor(Math.random() * namesF.length)] : namesM[Math.floor(Math.random() * namesM.length)];
+        const last = lastnames[Math.floor(Math.random() * lastnames.length)] + (isFemale ? "a" : "");
+        
+        const pool = [];
+        bloodTypes.forEach(b => { for(let i=0; i<b.w; i++) pool.push(b.t); });
+        
+        const regons = genRegonSet();
+        
+        document.getElementById('g-name').innerText = `${name} ${last}`;
+        document.getElementById('g-avatar').innerText = isFemale ? "👩" : "👨";
+        document.getElementById('g-blood').innerText = "Grupa: " + pool[Math.floor(Math.random() * pool.length)];
+        document.getElementById('g-pesel').innerText = genPESEL();
+        document.getElementById('g-nip').innerText = genNIP();
+        document.getElementById('g-krs').innerText = Math.floor(Math.random() * 1000000).toString().padStart(10, '0');
+        document.getElementById('g-regon9').innerText = regons.r9;
+        document.getElementById('g-regon14').innerText = regons.r14;
+    }
+
+    function validate() {
+        const val = document.getElementById('v-input').value.replace(/\D/g, '');
+        const st = document.getElementById('status');
+        const det = document.getElementById('v-details');
+        if(!val) { st.style.display='none'; det.innerText=''; return; }
+
+        let ok = false, type = "Nieznany";
+        const d = val.split('').map(Number);
+
+        if (val.length === 11) {
+            const w = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+            if ((10 - (getChecksum(d.slice(0, 10), w) % 10)) % 10 === d[10]) { ok = true; type = "PESEL"; }
+        } else if (val.length === 10) {
+            const w = [6, 5, 7, 2, 3, 4, 5, 6, 7];
+            if (getChecksum(d.slice(0, 9), w) % 11 === d[9]) { ok = true; type = "NIP"; }
+            else { ok = true; type = "KRS (Format poprawny)"; }
+        } else if (val.length === 9) {
+            const w = [8, 9, 2, 3, 4, 5, 6, 7];
+            let c = getChecksum(d.slice(0, 8), w) % 11;
+            if ((c === 10 ? 0 : c) === d[8]) { ok = true; type = "REGON 9"; }
+        } else if (val.length === 14) {
+            const w = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8];
+            let c = getChecksum(d.slice(0, 13), w) % 11;
+            if ((c === 10 ? 0 : c) === d[13]) { ok = true; type = "REGON 14"; }
+        }
+
+        st.className = ok ? 'valid' : 'invalid';
+        st.innerText = ok ? '✓ POPRAWNY' : '✗ BŁĘDNY';
+        st.style.display = 'block';
+        det.innerText = `Typ dokumentu: ${type}`;
+    }
+</script>
+</body>
+</html>
