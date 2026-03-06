@@ -2,134 +2,130 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Generator Danych PL - Wersja Finalna</title>
+    <title>Generator Tożsamości PRO - Naprawiony</title>
     <style>
-        :root { --primary: #dc2626; --secondary: #2563eb; --bg: #f1f5f9; --success: #16a34a; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); padding: 20px; display: flex; justify-content: center; }
-        .box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 650px; }
-        h2 { margin-top: 0; color: #64748b; font-size: 1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        :root { --primary: #10b981; --secondary: #0ea5e9; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
+        .box { background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 100%; max-width: 750px; border: 1px solid #334155; }
+        h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .item { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .label { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
-        .val { font-family: 'Courier New', monospace; font-size: 1rem; color: var(--secondary); font-weight: 800; display: block; margin-top: 4px; }
+        .item { background: #0f172a; padding: 15px; border-radius: 16px; border: 1px solid #334155; }
+        .label { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .val { font-family: 'Courier New', monospace; font-size: 1rem; color: #38bdf8; font-weight: bold; word-break: break-all; }
         .full { grid-column: span 2; }
-        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 20px; transition: 0.3s; }
-        button:hover { filter: brightness(1.2); }
-        .bank-tag { font-size: 0.7rem; color: #16a34a; font-weight: bold; }
+        button { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 1rem; margin-top: 20px; transition: 0.2s; }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .bank-tag { font-size: 0.75rem; color: #fbbf24; font-weight: bold; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>GENERATOR DANYCH OSOBOWYCH I FIRMOWYCH</h2>
+    <h2>Generator Tożsamości i Systemów Bankowych</h2>
     <div class="grid">
-        <div class="item"><span class="label">PESEL</span><span id="g-pesel" class="val">---</span></div>
+        <div class="item"><span class="label">PESEL (Dynamiczny)</span><span id="g-pesel" class="val">---</span></div>
         <div class="item"><span class="label">Dowód Osobisty</span><span id="g-id" class="val">---</span></div>
         <div class="item"><span class="label">NIP</span><span id="g-nip" class="val">---</span></div>
         <div class="item"><span class="label">KRS</span><span id="g-krs" class="val">---</span></div>
         <div class="item"><span class="label">REGON 9</span><span id="g-regon9" class="val">---</span></div>
         <div class="item"><span class="label">REGON 14</span><span id="g-regon14" class="val">---</span></div>
         <div class="item full">
-            <span class="label">KONTO BANKOWE (IBAN PL) - <span id="bank-name" class="bank-tag">...</span></span>
+            <span class="label">Rachunek IBAN (PL + 26 cyfr)</span>
             <span id="g-iban" class="val">---</span>
+            <span id="bank-name" class="bank-tag">Kliknij Generuj...</span>
         </div>
-        <div class="item full"><span class="label">MIKRORACHUNEK PODATKOWY (NA PODSTAWIE PESEL)</span><span id="g-tax-p" class="val">---</span></div>
-        <div class="item full"><span class="label">MIKRORACHUNEK PODATKOWY (NA PODSTAWIE NIP)</span><span id="g-tax-n" class="val">---</span></div>
+        <div class="item full"><span class="label">Mikrorachunek Podatkowy (PESEL)</span><span id="g-tax-p" class="val">---</span></div>
+        <div class="item full"><span class="label">Mikrorachunek Podatkowy (NIP)</span><span id="g-tax-n" class="val">---</span></div>
     </div>
     <button onclick="generateAll()">GENERUJ NOWY KOMPLET DANYCH</button>
 </div>
 
 <script>
-    const bankList = [
+    const banks = [
         {c: "1010", n: "Narodowy Bank Polski"}, {c: "1020", n: "PKO BP"}, {c: "1030", n: "Bank Handlowy (Citi)"},
         {c: "1050", n: "ING Bank Śląski"}, {c: "1090", n: "Santander Bank Polska"}, {c: "1140", n: "mBank"},
         {c: "1160", n: "Bank Millennium"}, {c: "1240", n: "Pekao SA"}, {c: "1320", n: "Bank Pocztowy"},
-        {c: "1540", n: "BOŚ Bank"}, {c: "1600", n: "BNP Paribas"}, {c: "2120", n: "Santander Consumer Bank"},
-        {c: "2490", n: "Alior Bank"}
+        {c: "1540", n: "BOŚ Bank"}, {c: "1600", n: "BNP Paribas"}, {c: "1940", n: "Credit Agricole"},
+        {c: "2120", n: "Santander Consumer"}, {c: "2410", n: "ZEN.COM"}, {c: "2490", n: "Alior Bank"},
+        {c: "1870", n: "Nest Bank"}, {c: "1930", n: "Powszechny Bank Spółdzielczy"}, {c: "1610", n: "SGB-Bank"}
     ];
 
-    // Funkcja Modulo dla bardzo dużych liczb (IBAN)
-    function ibanModulo(string) {
-        return BigInt(string) % 97n;
+    // --- MATEMATYKA IBAN (BigInt dla precyzji) ---
+    function calcIbanControl(bban) {
+        const v = bban + "252100"; // 2521 = PL
+        const rem = BigInt(v) % 97n;
+        return (98n - rem).toString().padStart(2, '0');
     }
 
-    function calculateIbanChecksum(bban) {
-        const converted = bban + "252100"; // 25=P, 21=L
-        const remainder = ibanModulo(converted);
-        const checksum = 98n - remainder;
-        return checksum.toString().padStart(2, '0');
-    }
-
+    // --- GENERATORY ---
     function genPESEL() {
-        const date = new Date(1950 + Math.random() * 75, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
-        let y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
+        const y = 1950 + Math.floor(Math.random() * 75);
+        let m = 1 + Math.floor(Math.random() * 12);
+        const d = 1 + Math.floor(Math.random() * 28);
         if (y >= 2000) m += 20;
-        const digits = [Math.floor((y%100)/10), y%10, Math.floor(m/10), m%10, Math.floor(d/10), d%10, ...Array.from({length: 4}, () => Math.floor(Math.random()*10))];
+        const base = [Math.floor((y%100)/10), y%10, Math.floor(m/10), m%10, Math.floor(d/10), d%10, ...Array.from({length: 4}, () => Math.floor(Math.random()*10))];
         const w = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
-        let sum = digits.reduce((acc, v, i) => acc + v * w[i], 0);
-        digits.push((10 - (sum % 10)) % 10);
-        return digits.join('');
+        const sum = base.reduce((a, v, i) => a + v * w[i], 0);
+        base.push((10 - (sum % 10)) % 10);
+        return base.join('');
     }
 
     function genNIP() {
         const w = [6, 5, 7, 2, 3, 4, 5, 6, 7];
         while(true) {
             const d = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
-            let sum = d.reduce((acc, v, i) => acc + v * w[i], 0);
-            if (sum % 11 !== 10) return d.join('') + (sum % 11);
+            const check = d.reduce((a, v, i) => a + v * w[i], 0) % 11;
+            if (check !== 10) return d.join('') + check;
         }
     }
 
     function genRegons() {
-        const w9 = [8, 9, 2, 3, 4, 5, 6, 7];
         const d9 = Array.from({length: 8}, () => Math.floor(Math.random() * 10));
-        let c9 = d9.reduce((acc, v, i) => acc + v * w9[i], 0) % 11;
-        d9.push(c9 === 10 ? 0 : c9);
+        const w9 = [8, 9, 2, 3, 4, 5, 6, 7];
+        let c9 = d9.reduce((a, v, i) => a + v * w9[i], 0) % 11; d9.push(c9 === 10 ? 0 : c9);
         const r9 = d9.join('');
         const d14 = [...d9, ...Array.from({length: 4}, () => Math.floor(Math.random() * 10))];
         const w14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 2, 4, 8];
-        let c14 = d14.reduce((acc, v, i) => acc + v * w14[i], 0) % 11;
-        d14.push(c14 === 10 ? 0 : c14);
+        let c14 = d14.reduce((a, v, i) => a + v * w14[i], 0) % 11; d14.push(c14 === 10 ? 0 : c14);
         return { r9, r14: d14.join('') };
     }
 
     function genID() {
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const l = Array.from({length: 3}, () => letters[Math.floor(Math.random() * 26)]);
-        const d = Array.from({length: 5}, () => Math.floor(Math.random() * 10));
+        const L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const l = [L[Math.floor(Math.random()*26)], L[Math.floor(Math.random()*26)], L[Math.floor(Math.random()*26)]];
+        const d = Array.from({length: 5}, () => Math.floor(Math.random()*10));
         const map = (c) => c.charCodeAt(0) - 55;
         const w = [7, 3, 1, 7, 3, 1, 7, 3];
-        const vals = [...l.map(map), ...d];
-        let sum = vals.reduce((acc, v, i) => acc + v * w[i], 0);
-        return `${l.join('')}${sum % 10}${d.join('')}`;
+        const val = [...l.map(map), ...d];
+        const sum = val.reduce((a, v, i) => a + v * w[i], 0);
+        return l.join('') + (sum % 10) + d.join('');
     }
 
     function generateAll() {
         const pesel = genPESEL();
         const nip = genNIP();
         const regons = genRegons();
-        const bank = bankList[Math.floor(Math.random() * bankList.length)];
+        const bank = banks[Math.floor(Math.random() * banks.length)];
         
-        // Generowanie IBAN
-        const bban = bank.c + "0000" + Math.random().toString().slice(2, 14);
-        const iban = "PL" + calculateIbanChecksum(bban) + bban;
+        // Dynamiczny numer konta (BankCode + 4 cyfry oddziału + 16 cyfr konta)
+        const bban = bank.c + Math.floor(1000 + Math.random()*8999) + Math.random().toString().slice(2, 18).padEnd(16, '0');
+        const iban = "PL" + calcIbanControl(bban) + bban;
 
-        // Mikrorachunki (Stały człon 10100071 + 222 + typ(1-P/2-N) + id)
-        const taxP_BBAN = "101000712221" + pesel.padStart(13, '0');
-        const taxN_BBAN = "101000712222" + nip.padStart(13, '0');
+        // Mikrorachunek (NBP 10100071 + MF 222 + Typ + ID)
+        const txP_BBAN = "101000712221" + pesel.padStart(13, '0');
+        const txN_BBAN = "101000712222" + nip.padStart(13, '0');
 
         document.getElementById('g-pesel').innerText = pesel;
         document.getElementById('g-id').innerText = genID();
         document.getElementById('g-nip').innerText = nip;
-        document.getElementById('g-krs').innerText = Math.floor(Math.random()*1000000).toString().padStart(10, '0');
+        document.getElementById('g-krs').innerText = "0000" + Math.floor(100000 + Math.random()*899999);
         document.getElementById('g-regon9').innerText = regons.r9;
         document.getElementById('g-regon14').innerText = regons.r14;
         document.getElementById('g-iban').innerText = iban.replace(/(.{4})/g, '$1 ');
-        document.getElementById('bank-name').innerText = bank.n;
-        document.getElementById('g-tax-p').innerText = "PL" + calculateIbanChecksum(taxP_BBAN) + taxP_BBAN;
-        document.getElementById('g-tax-n').innerText = "PL" + calculateIbanChecksum(taxN_BBAN) + taxN_BBAN;
+        document.getElementById('bank-name').innerText = "Bank: " + bank.n;
+        document.getElementById('g-tax-p').innerText = "PL" + calcIbanControl(txP_BBAN) + txP_BBAN;
+        document.getElementById('g-tax-n').innerText = "PL" + calcIbanControl(txN_BBAN) + txN_BBAN;
     }
 </script>
-
 </body>
 </html>
