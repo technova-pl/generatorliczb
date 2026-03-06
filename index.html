@@ -22,7 +22,6 @@
         .copy-hint { font-size: 0.6rem; color: var(--primary); position: absolute; right: 10px; top: 10px; opacity: 0; }
         .item:hover .copy-hint { opacity: 1; }
 
-        /* Style Stopki */
         .footer { 
             margin-top: 40px; 
             padding: 20px; 
@@ -96,14 +95,20 @@
 </footer>
 
 <script>
+    const imionaM = ["Jan", "Andrzej", "Piotr", "Krzysztof", "Stanisław", "Tomasz", "Paweł", "Józef", "Marcin", "Marek", "Michał", "Grzegorz", "Jerzy", "Tadeusz", "Adam", "Łukasz", "Zbigniew", "Ryszard", "Dariusz", "Henryk", "Mariusz", "Kazimierz", "Wojciech", "Robert", "Mateusz", "Marian", "Rafał", "Jacek", "Janusz", "Mirosław"];
+    const imionaZ = ["Anna", "Maria", "Katarzyna", "Małgorzata", "Agnieszka", "Krystyna", "Barbara", "Ewa", "Elżbieta", "Zofia", "Janina", "Teresa", "Joanna", "Magdalena", "Monika", "Jadwiga", "Danuta", "Irena", "Halina", "Helena", "Beata", "Aleksandra", "Marta", "Dorota", "Marianna", "Grażyna", "Jolanta", "Stanisława", "Iwona", "Urszula"];
+    const nazwiska = ["Nowak", "Kowalski", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski", "Kozłowski", "Jankowski", "Mazur", "Wojciechowski", "Kwiatkowski", "Krawczyk", "Kaczmarek", "Piotrowski", "Grabowski", "Zając", "Pawłowski", "Michalski", "Król", "Wieczorek", "Jabłoński", "Wróbel", "Nowakowski", "Majewski", "Olszewski"];
+
     const bankList = [
         {c: "1940", n: "Credit Agricole S.A."}, {c: "2410", n: "ZEN.COM Digital Banking"},
         {c: "1020", n: "PKO BP"}, {c: "1140", n: "mBank"}, {c: "1050", n: "ING Bank Śląski"}
     ];
 
     const ops = [
-        { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
-        { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
+        { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, 
+        { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
+        { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, 
+        { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
     ];
 
     const bigMod97 = (s) => BigInt(s) % 97n;
@@ -114,8 +119,18 @@
         const nip = genNIP();
         const reg = genRegons();
         
+        // Losowanie imienia i nazwiska
+        let imie = isF ? imionaZ[Math.floor(Math.random() * imionaZ.length)] : imionaM[Math.floor(Math.random() * imionaM.length)];
+        let nazwisko = nazwiska[Math.floor(Math.random() * nazwiska.length)];
+        
+        // Korekta nazwisk żeńskich (ska/cka)
+        if (isF) {
+            if (nazwisko.endsWith("ski")) nazwisko = nazwisko.slice(0, -3) + "ska";
+            else if (nazwisko.endsWith("cki")) nazwisko = nazwisko.slice(0, -3) + "cka";
+        }
+
         document.getElementById('g-avatar').innerText = isF ? "👩" : "👨";
-        document.getElementById('g-full-name').innerText = isF ? "Katarzyna Wiśniewska" : "Marek Zieliński";
+        document.getElementById('g-full-name').innerText = imie + " " + nazwisko;
         
         const op = ops[Math.floor(Math.random()*ops.length)];
         document.getElementById('g-phone').innerText = "+48 " + op.p[Math.floor(Math.random()*op.p.length)] + " " + Math.floor(100+Math.random()*899) + " " + Math.floor(100+Math.random()*899);
