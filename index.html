@@ -52,6 +52,65 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .footer-links { margin-bottom: 10px; }
         .footer-links a { color: var(--secondary); text-decoration: none; margin: 0 15px; transition: color 0.2s; font-weight: 600; }
         .footer-links a:hover { color: var(--primary); text-decoration: underline; }
+        /* Styl Baneru Cookies */
+.cookie-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    display: none;
+    backdrop-filter: blur(4px);
+}
+
+.cookie-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 550px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: none;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translate(-50%, 100%); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.cookie-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cookie-icon { font-size: 1.5rem; }
+.cookie-header h3 { margin: 0; color: #10b981; font-size: 1.1rem; }
+
+.cookie-content p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.cookie-content a { color: #3b82f6; text-decoration: none; font-weight: bold; }
+
+.cookie-buttons { display: flex; gap: 10px; }
+.btn-cookie {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cookie.primary { background: #10b981; color: white; }
+.btn-cookie.secondary { background: #334155; color: #f8fafc; border: 1px solid #475569; }
+.btn-cookie:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body>
@@ -217,6 +276,61 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         navigator.clipboard.writeText(val);
         const h = el.querySelector('.copy-hint'); h.innerText = "SKOPIOWANO"; setTimeout(()=>h.innerText="KOPIUJ", 1000);
     }
+    function saveCookieConsent(type) {
+    // Zapisujemy wybór w localStorage (na rok)
+    const consent = {
+        accepted: true,
+        type: type,
+        date: new Date().toISOString()
+    };
+    localStorage.setItem('cookieConsent', JSON.stringify(consent));
+    
+    // Jeśli użytkownik zaakceptował "all", tutaj możesz odpalić skrypty śledzące
+    if (type === 'all') {
+        initTracking(); 
+    }
+    
+    // Ukrywamy baner
+    document.getElementById('cookie-consent-banner').style.display = 'none';
+    document.getElementById('cookie-overlay').style.display = 'none';
+}
+
+function checkCookieConsent() {
+    const consent = localStorage.getItem('cookieConsent');
+    if (!consent) {
+        document.getElementById('cookie-consent-banner').style.display = 'block';
+        document.getElementById('cookie-overlay').style.display = 'block';
+    } else {
+        const parsed = JSON.parse(consent);
+        if (parsed.type === 'all') initTracking();
+    }
+}
+
+function initTracking() {
+    console.log("Inicjalizacja śledzenia ruchu (Google Analytics itp.)...");
+    // Tutaj wklej swój właściwy kod śledzący
+}
+
+// Uruchomienie sprawdzania po załadowaniu strony
+window.addEventListener('DOMContentLoaded', checkCookieConsent);
+    <div id="cookie-overlay" class="cookie-overlay"></div>
+<div id="cookie-consent-banner" class="cookie-container">
+    <div class="cookie-content">
+        <div class="cookie-header">
+            <span class="cookie-icon">🍪</span>
+            <h3>Dbamy o Twoją prywatność</h3>
+        </div>
+        <p>
+            Używamy plików cookies, aby analizować ruch na stronie i poprawiać komfort użytkowania. 
+            Możesz zaakceptować wszystkie ciasteczka, odrzucić te opcjonalne lub dostosować swoje wybory. 
+            Więcej informacji znajdziesz w naszej <a href="polityka.html">Polityce Prywatności</a>.
+        </p>
+        <div class="cookie-buttons">
+            <button onclick="saveCookieConsent('essential')" class="btn-cookie secondary">Tylko niezbędne</button>
+            <button onclick="saveCookieConsent('all')" class="btn-cookie primary">Akceptuję wszystkie</button>
+        </div>
+    </div>
+</div>
 </script>
 </body>
 </html>
