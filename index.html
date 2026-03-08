@@ -21,117 +21,106 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="17650693.png">
     <title>Generator Tożsamości</title>
-    <meta name="description" content="Profesjonalny generator fikcyjnych tożsamości. Generuj PESEL, NIP, numery kont, adresy i mikrorachunki podatkowe do celów testowych i programistycznych.">
-    <meta name="keywords" content="generator pesel, generator nip, dane testowe, programowanie, tester oprogramowania, mikrorachunek podatkowy">
-    <meta name="author" content="Generator Tożsamości">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="Generator Tożsamości PRO - Kompletne Dane Testowe">
-    <meta property="og:description" content="Szybkie generowanie poprawnych numerów PESEL, NIP, REGON oraz IBAN. Idealne narzędzie dla deweloperów.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://technova-pl.github.io/generatortozsamosci">
+    
+    <meta name="description" content="Profesjonalny generator fikcyjnych tożsamości. Generuj PESEL, NIP, numery kont i dane komunikacyjne.">
+    <meta name="keywords" content="generator pesel, generator nip, dane testowe, vin, tablice rejestracyjne">
     <style>
         :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #fbbf24; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .box { background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 100%; max-width: 900px; border: 1px solid #334155; }
-        h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 20px; text-align: center; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+        .box { background: var(--card); padding: 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); width: 100%; max-width: 900px; border: 1px solid #334155; box-sizing: border-box; }
+        h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; text-transform: uppercase; border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 20px; text-align: center; letter-spacing: 1px; }
+        
         .profile-section { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; background: #0f172a; padding: 20px; border-radius: 16px; border-left: 5px solid var(--primary); }
-        .avatar { font-size: 3rem; background: #1e293b; padding: 10px; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        .avatar { font-size: 3rem; background: #1e293b; padding: 10px; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border: 1px solid #334155; }
+        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .item { background: #0f172a; padding: 12px 15px; border-radius: 12px; border: 1px solid #334155; position: relative; cursor: pointer; transition: 0.2s; }
-        .item:hover { border-color: var(--secondary); background: #161e31; }
+        .item:hover { border-color: var(--secondary); background: #161e31; transform: translateY(-2px); }
+        
         .label { font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 4px; }
-        .val { font-family: 'Courier New', monospace; font-size: 0.95rem; color: #38bdf8; font-weight: bold; }
+        .val { font-family: 'Courier New', monospace; font-size: 0.95rem; color: #38bdf8; font-weight: bold; word-break: break-all; }
         .full { grid-column: span 2; }
-        button.main-btn { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 1.1rem; margin-top: 20px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        button.main-btn:active { transform: scale(0.98); }
+        
+        button.main-btn { width: 100%; padding: 18px; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 1.1rem; margin-top: 20px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: 0.3s; }
+        button.main-btn:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+        
         .tag { font-size: 0.75rem; color: var(--accent); font-weight: bold; }
-        .copy-hint { font-size: 0.6rem; color: var(--primary); position: absolute; right: 10px; top: 10px; opacity: 0; }
+        .copy-hint { font-size: 0.6rem; color: var(--primary); position: absolute; right: 10px; top: 10px; opacity: 0; transition: 0.2s; }
         .item:hover .copy-hint { opacity: 1; }
 
         .footer { margin-top: 40px; padding: 20px; width: 100%; max-width: 900px; text-align: center; border-top: 1px solid #334155; font-size: 0.8rem; color: #94a3b8; }
-        .footer-links { margin-bottom: 10px; }
+        .footer-links { margin-bottom: 15px; }
         .footer-links a { color: var(--secondary); text-decoration: none; margin: 0 15px; transition: color 0.2s; font-weight: 600; }
-        .footer-links a:hover { color: var(--primary); text-decoration: underline; }
+        .footer-links a:hover { color: var(--primary); }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .full { grid-column: span 1; } }
     </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N4PLZJQM"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<div class="box">
-    <h2>Generator tożsamości</h2>
-    
-    <div class="profile-section">
-        <div id="g-avatar" class="avatar">👤</div>
-        <div>
-            <div id="g-full-name" style="font-size: 1.5rem; font-weight: 800; color: #fff;">Gotowy do pracy</div>
-            <div id="g-gender-label" style="font-size: 0.9rem; color: #94a3b8;">PESEL | GSM | ADRES | NIP | IBAN</div>
+    <div class="box">
+        <h2>Generator tożsamości</h2>
+        
+        <div class="profile-section">
+            <div id="g-avatar" class="avatar">👤</div>
+            <div>
+                <div id="g-full-name" style="font-size: 1.5rem; font-weight: 800; color: #fff;">Gotowy do pracy</div>
+                <div id="g-gender-label" style="font-size: 0.9rem; color: #94a3b8;">PESEL | NIP | REGON | IBAN</div>
+            </div>
         </div>
+
+        <div class="grid">
+            <div class="item full" onclick="copy(this)"><span class="label">Adres zamieszkania</span><span id="g-address" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item full" onclick="copy(this)"><span class="label">Numer Telefonu - <span id="g-operator" class="tag">...</span></span><span id="g-phone" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            
+            <div class="item" onclick="copy(this)"><span class="label">PESEL</span><span id="g-pesel" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">Dowód Osobisty</span><span id="g-id" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            
+            <div class="item" onclick="copy(this)"><span class="label">Nr Rejestracyjny</span><span id="g-plate" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">Numer VIN</span><span id="g-vin" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">Numer Prawa Jazdy</span><span id="g-license" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">Nr Dowodu Rejestr.</span><span id="g-car-id" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+
+            <div class="item" onclick="copy(this)"><span class="label">NIP</span><span id="g-nip" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">KRS</span><span id="g-krs" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">REGON 9</span><span id="g-regon9" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item" onclick="copy(this)"><span class="label">REGON 14</span><span id="g-regon14" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            
+            <div class="item full" onclick="copy(this)"><span class="label">IBAN (PL) - <span id="bank-name" class="tag">...</span></span><span id="g-iban" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Osoba - PESEL)</span><span id="g-tax-p" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+            <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Firma - NIP)</span><span id="g-tax-n" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
+        </div>
+        
+        <button class="main-btn" onclick="generateAll()">GENERUJ KOMPLET DANYCH</button>
     </div>
 
-    <div class="grid">
-        <div class="item full" onclick="copy(this)">
-            <span class="label">Adres zamieszkania</span>
-            <span id="g-address" class="val">---</span>
-            <span class="copy-hint">KOPIUJ</span>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="regulamin.html">Regulamin</a>
+            <a href="polityka.html">Polityka Prywatności</a>
+            <a href="rodo.html">RODO</a>
         </div>
-
-        <div class="item full" onclick="copy(this)">
-            <span class="label">Numer Telefonu - <span id="g-operator" class="tag">...</span></span>
-            <span id="g-phone" class="val">---</span>
-            <span class="copy-hint">KOPIUJ</span>
-        </div>
-        
-        <div class="item" onclick="copy(this)"><span class="label">PESEL</span><span id="g-pesel" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        <div class="item" onclick="copy(this)"><span class="label">Dowód Osobisty</span><span id="g-id" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        
-        <div class="item" onclick="copy(this)"><span class="label">NIP</span><span id="g-nip" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        <div class="item" onclick="copy(this)"><span class="label">KRS</span><span id="g-krs" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-
-        <div class="item" onclick="copy(this)"><span class="label">REGON 9</span><span id="g-regon9" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        <div class="item" onclick="copy(this)"><span class="label">REGON 14</span><span id="g-regon14" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        
-        <div class="item full" onclick="copy(this)">
-            <span class="label">IBAN (PL + 26 cyfr) - <span id="bank-name" class="tag">...</span></span>
-            <span id="g-iban" class="val">---</span>
-            <span class="copy-hint">KOPIUJ</span>
-        </div>
-        
-        <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Osoba - PESEL)</span><span id="g-tax-p" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-        <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Firma - NIP)</span><span id="g-tax-n" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-    </div>
-    
-    <button class="main-btn" onclick="generateAll()">GENERUJ KOMPLET DANYCH</button>
-</div>
-
-<footer class="footer">
-    <div class="footer-links">
-        <a href="regulamin.html" target="_blank">Regulamin</a>
-        <a href="polityka.html" target="_blank">Polityka Prywatności</a>
-        <a href="rodo.html" target="_blank">RODO</a>
-    </div>
-    <p>&copy; 2026 Generator Tożsamości. Wszystkie dane są fikcyjne i służą do testów.</p>
-</footer>
+        <p>&copy; 2026 Generator Tożsamości. Wszystkie dane są fikcyjne i służą wyłącznie do celów testowych.</p>
+    </footer>
 
 <script>
-    const imionaM = ["Jan", "Andrzej", "Piotr", "Krzysztof", "Stanisław", "Tomasz", "Paweł", "Józef", "Marcin", "Marek", "Michał", "Grzegorz", "Jerzy", "Tadeusz", "Adam", "Łukasz", "Zbigniew", "Ryszard", "Dariusz", "Henryk", "Mariusz", "Kazimierz", "Wojciech", "Robert", "Mateusz", "Marian", "Rafał", "Jacek", "Janusz", "Mirosław"];
-    const imionaZ = ["Anna", "Maria", "Katarzyna", "Małgorzata", "Agnieszka", "Krystyna", "Barbara", "Ewa", "Elżbieta", "Zofia", "Janina", "Teresa", "Joanna", "Magdalena", "Monika", "Jadwiga", "Danuta", "Irena", "Halina", "Helena", "Beata", "Aleksandra", "Marta", "Dorota", "Marianna", "Grażyna", "Jolanta", "Stanisława", "Iwona", "Urszula"];
-    const nazwiska = ["Nowak", "Kowalski", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski", "Kozłowski", "Jankowski", "Mazur", "Wojciechowski", "Kwiatkowski", "Krawczyk", "Kaczmarek", "Piotrowski", "Grabowski", "Zając", "Pawłowski", "Michalski", "Król", "Wieczorek", "Jabłoński", "Wróbel", "Nowakowski", "Majewski", "Olszewski"];
-    
-    const miasta = ["Warszawa", "Kraków", "Wrocław", "Łódź", "Poznań", "Gdańsk", "Szczecin", "Bydgoszcz", "Lublin", "Białystok", "Katowice", "Gdynia", "Częstochowa", "Radom", "Toruń", "Sosnowiec", "Rzeszów", "Kielce", "Gliwice", "Olsztyn"];
-    const ulice = ["Polna", "Leśna", "Słoneczna", "Krótka", "Szkolna", "Ogrodowa", "Lipowa", "Brzozowa", "Łąkowa", "Kwiatowa", "Kościelna", "Sosnowa", "Zielona", "Parkowa", "Mickiewicza", "Słowackiego", "Kopernika", "Witosa", "Piłsudskiego", "Długa"];
+    const imionaM = ["Jan", "Andrzej", "Piotr", "Krzysztof", "Stanisław", "Tomasz", "Paweł", "Marcin", "Michał", "Adam", "Łukasz", "Robert", "Mateusz", "Rafał"];
+    const imionaZ = ["Anna", "Maria", "Katarzyna", "Małgorzata", "Agnieszka", "Barbara", "Ewa", "Magdalena", "Monika", "Joanna", "Beata", "Marta", "Dorota"];
+    const nazwiska = ["Nowak", "Kowalski", "Wiśniewski", "Wójcik", "Kowalczyk", "Kamiński", "Lewandowski", "Zieliński", "Szymański", "Woźniak", "Dąbrowski"];
+    const miasta = ["Warszawa", "Kraków", "Wrocław", "Łódź", "Poznań", "Gdańsk", "Szczecin", "Lublin", "Białystok", "Katowice"];
+    const ulice = ["Polna", "Leśna", "Słoneczna", "Szkolna", "Ogrodowa", "Lipowa", "Zielona", "Parkowa", "Mickiewicza", "Kopernika"];
 
     const bankList = [
-        {c: "1940", n: "Credit Agricole S.A."}, {c: "2410", n: "ZEN.COM Digital Banking"},
-        {c: "1020", n: "PKO BP"}, {c: "1140", n: "mBank"}, {c: "1050", n: "ING Bank Śląski"}
+        {c: "1940", n: "Credit Agricole Bank Polska S.A."}, {c: "2410", n: "ZEN.COM Digital Banking"},
+        {c: "1020", n: "PKO BP"}, {c: "1140", n: "mBank S.A"}, {c: "1050", n: "ING Bank Śląski"}, {c: "2490", n: "Nest Bank"}
     ];
-
     const ops = [
         { n: "Orange", p: ["501","502","503","504","505","506","507","508","509","452","500","510","511","512","513","514","515","516","517","518","519","572","797","798"] }, { n: "Plus", p: ["601","603","605","607","609","661","663","665","667","669","691","693","695","697","721","722","723","724","725","726","781","782","783","785","885","887"] },
         { n: "T-Mobile", p: ["532","538","539","600","602","604","606","608","660","662","664","668","692","694","696","698","734","735","784","787","788","880","882","886","888","889"] }, { n: "Play", p: ["530","531","534","535","537","570","574","575","576","577","578","731","790","791","792","794","796","730"] }
-    ];
+    ];    
     const bigMod97 = (s) => BigInt(s) % 97n;
 
     function generateAll() {
@@ -140,24 +129,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const nip = genNIP();
         const reg = genRegons();
         
-        // Imię i Nazwisko
         let imie = isF ? imionaZ[Math.floor(Math.random()*imionaZ.length)] : imionaM[Math.floor(Math.random()*imionaM.length)];
         let nazwisko = nazwiska[Math.floor(Math.random()*nazwiska.length)];
         if (isF && nazwisko.endsWith("ski")) nazwisko = nazwisko.slice(0, -3) + "ska";
-        if (isF && nazwisko.endsWith("cki")) nazwisko = nazwisko.slice(0, -3) + "cka";
-
-        // Adres
-        const miasto = miasta[Math.floor(Math.random()*miasta.length)];
-        const ulica = ulice[Math.floor(Math.random()*ulice.length)];
-        const nrDomu = Math.floor(Math.random()*150) + 1;
-        const kod = Math.floor(10+Math.random()*89) + "-" + Math.floor(100+Math.random()*899);
         
         document.getElementById('g-avatar').innerText = isF ? "👩" : "👨";
         document.getElementById('g-full-name').innerText = imie + " " + nazwisko;
-        document.getElementById('g-address').innerText = kod + " " + miasto + ", ul. " + ulica + " " + nrDomu;
+        
+        const miasto = miasta[Math.floor(Math.random()*miasta.length)];
+        const ulica = ulice[Math.floor(Math.random()*ulice.length)];
+        const kod = Math.floor(10+Math.random()*89) + "-" + Math.floor(100+Math.random()*899);
+        document.getElementById('g-address').innerText = `${kod} ${miasto}, ul. ${ulica} ${Math.floor(Math.random()*120)+1}`;
         
         const op = ops[Math.floor(Math.random()*ops.length)];
-        document.getElementById('g-phone').innerText = "+48 " + op.p[Math.floor(Math.random()*op.p.length)] + " " + Math.floor(100+Math.random()*899) + " " + Math.floor(100+Math.random()*899);
+        document.getElementById('g-phone').innerText = `+48 ${op.p[Math.floor(Math.random()*op.p.length)]} ${Math.floor(100+Math.random()*899)} ${Math.floor(100+Math.random()*899)}`;
         document.getElementById('g-operator').innerText = op.n;
 
         document.getElementById('g-pesel').innerText = pesel;
@@ -166,6 +151,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         document.getElementById('g-krs').innerText = "0000" + Math.floor(100000+Math.random()*899999);
         document.getElementById('g-regon9').innerText = reg.r9;
         document.getElementById('g-regon14').innerText = reg.r14;
+
+        document.getElementById('g-plate').innerText = genPlate();
+        document.getElementById('g-vin').innerText = genVIN();
+        document.getElementById('g-license').innerText = genLicense();
+        document.getElementById('g-car-id').innerText = genCarID();
 
         const bank = bankList[Math.floor(Math.random()*bankList.length)];
         const bban = bank.c + Math.floor(1001+Math.random()*8999) + Math.random().toString().slice(2,18).padEnd(16,'0');
@@ -177,6 +167,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const txN = "101000712222" + nip.padStart(13,'0');
         document.getElementById('g-tax-p').innerText = "PL" + (98n - bigMod97(txP + "252100")).toString().padStart(2,'0') + txP;
         document.getElementById('g-tax-n').innerText = "PL" + (98n - bigMod97(txN + "252100")).toString().padStart(2,'0') + txN;
+    }
+
+    // --- LOGIKA GENERATORÓW ---
+
+    function genPlate() {
+        const letters = "ABCDEFGHJKLMNPRSTUVWXYZ"; 
+        const digits = "0123456789";
+        const prefixes = [
+            "WA", "WB", "WD", "WE", "WF", "WH", "WI", "WJ", "WK", "WN", "WT", "WY",
+            "KR", "KK", "KN", "KT", "DW", "DB", "DL", "DZ", "PO", "PY", "PZ", "PN",
+            "GD", "GA", "GS", "GSP", "SK", "SM", "ST", "SW", "LU", "LZ", "LB",
+            "BI", "BS", "BIA", "RZ", "PR", "RT", "RZE", "RK", "RKR", "XD"
+        ];
+        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        let suffix = "";
+
+        if (prefix.length === 2) {
+            const r = Math.random();
+            if (r < 0.4) suffix = Array.from({length: 5}, () => digits[Math.floor(Math.random() * 10)]).join('');
+            else if (r < 0.7) suffix = Array.from({length: 4}, () => digits[Math.floor(Math.random() * 10)]).join('') + letters[Math.floor(Math.random() * letters.length)];
+            else suffix = Array.from({length: 3}, () => digits[Math.floor(Math.random() * 10)]).join('') + letters[Math.floor(Math.random() * letters.length)] + letters[Math.floor(Math.random() * letters.length)];
+        } else {
+            const r = Math.random();
+            if (r < 0.5) suffix = Array.from({length: 5}, () => digits[Math.floor(Math.random() * 10)]).join('');
+            else suffix = Array.from({length: 2}, () => digits[Math.floor(Math.random() * 10)]).join('') + letters[Math.floor(Math.random() * letters.length)] + letters[Math.floor(Math.random() * letters.length)];
+        }
+        return `${prefix} ${suffix}`;
+    }
+
+    function genVIN() {
+        const chars = "0123456789ABCDEFGHJKLMNPRSTUVWXYZ";
+        return Array.from({length: 17}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    }
+
+    function genLicense() {
+        return `${Math.floor(10000+Math.random()*89999)}/${Math.floor(10+Math.random()*89)}/${Math.floor(1000+Math.random()*8999)}`;
+    }
+
+    function genCarID() {
+        const L = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return L[Math.floor(Math.random()*26)] + L[Math.floor(Math.random()*26)] + " " + Math.floor(1000000 + Math.random() * 8999999);
     }
 
     function genPESEL(isF) {
@@ -216,7 +247,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     function copy(el) {
         const val = el.querySelector('.val').innerText.replace(/\s/g, '');
         navigator.clipboard.writeText(val);
-        const h = el.querySelector('.copy-hint'); h.innerText = "SKOPIOWANO"; setTimeout(()=>h.innerText="KOPIUJ", 1000);
+        const h = el.querySelector('.copy-hint'); 
+        h.innerText = "SKOPIOWANO"; 
+        h.style.color = "#fbbf24";
+        setTimeout(() => { h.innerText = "KOPIUJ"; h.style.color = "#10b981"; }, 1000);
     }
 </script>
 </body>
