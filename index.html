@@ -86,8 +86,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="item full" onclick="copy(this)"><span class="label">Numer Telefonu - <span id="g-operator" class="tag">...</span></span><span id="g-phone" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             
             <div class="item" onclick="copy(this)"><span class="label">PESEL</span><span id="g-pesel" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-            <div class="item" onclick="copy(this)"><span class="label">Dowód Osobisty</span><span id="g-id" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-            
+            <div class="item" onclick="copy(this)"><span class="label">Dowód Osobisty</span><span id="g-id" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>            
             <div class="item" onclick="copy(this)"><span class="label">Nr Rejestracyjny</span><span id="g-plate" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item" onclick="copy(this)"><span class="label">Numer VIN</span><span id="g-vin" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item" onclick="copy(this)"><span class="label">Numer Prawa Jazdy</span><span id="g-license" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
@@ -97,7 +96,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="item" onclick="copy(this)"><span class="label">KRS</span><span id="g-krs" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item" onclick="copy(this)"><span class="label">REGON 9</span><span id="g-regon9" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item" onclick="copy(this)"><span class="label">REGON 14</span><span id="g-regon14" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
-            
+<div class="item" onclick="copy(this)">
+    <span class="label">Paszport</span>
+    <span id="g-passport" class="val">---</span>
+    <span class="copy-hint">KOPIUJ</span>
+</div>
+<div class="item" onclick="copy(this)">
+    <span class="label">NPWZ (Lekarz)</span>
+    <span id="g-npwz" class="val">---</span>
+    <span class="copy-hint">KOPIUJ</span>
+</div>            
             <div class="item full" onclick="copy(this)"><span class="label">IBAN (PL) - <span id="bank-name" class="tag">...</span></span><span id="g-iban" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Osoba - PESEL)</span><span id="g-tax-p" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
             <div class="item full" onclick="copy(this)"><span class="label">Mikrorachunek (Firma - NIP)</span><span id="g-tax-n" class="val">---</span><span class="copy-hint">KOPIUJ</span></div>
@@ -184,6 +192,11 @@ const BAZA_TABLIC = {
         document.getElementById('g-krs').innerText = "0000" + Math.floor(100000+Math.random()*899999);
         document.getElementById('g-regon9').innerText = reg.r9;
         document.getElementById('g-regon14').innerText = reg.r14;
+const passport = genPassport(); 
+    document.getElementById('g-passport').innerText = passport;
+// Generowanie NPWZ
+    const npwz = genNPWZ();
+    document.getElementById('g-npwz').innerText = npwz;
 
 document.getElementById('g-plate').innerText = genPlate();
         document.getElementById('g-vin').innerText = genVIN();
@@ -1292,6 +1305,46 @@ function genRegons() {
             if(c !== 10) return d.join('') + c;
         }
     }
+// --- GENERATOR PASZPORTU ---
+function genPassport() {
+    // Seria: 2 litery z zakresu A-Z
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let series = "";
+    for (let i = 0; i < 2; i++) {
+        series += letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+
+    // Numer: 7 cyfr
+    let number = "";
+    for (let i = 0; i < 7; i++) {
+        number += Math.floor(Math.random() * 10).toString();
+    }
+
+    return series + number;
+}
+function genNPWZ() {
+    let d = [];
+    // Losujemy 6 cyfr (od pozycji 2 do 7)
+    for (let i = 0; i < 6; i++) {
+        d.push(Math.floor(Math.random() * 10));
+    }
+    
+    // Obliczamy sumę kontrolną: (1*d1 + 2*d2 + 3*d3 + 4*d4 + 5*d5 + 6*d6) % 11
+    let sum = 0;
+    for (let i = 0; i < 6; i++) {
+        sum += (i + 1) * d[i];
+    }
+    
+    let control = sum % 11;
+    
+    // Jeśli suma modulo 11 daje 10, NPWZ jest nieważne - losujemy od nowa
+    if (control === 0 || control === 10) {
+        return genNPWZ(); 
+    }
+    
+    // Wynik to cyfra kontrolna + 6 cyfr losowych
+    return control.toString() + d.join('');
+}
     function copy(el) {
         const val = el.querySelector('.val').innerText.replace(/\s/g, '');
         navigator.clipboard.writeText(val);
