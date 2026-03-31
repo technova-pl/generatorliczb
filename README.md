@@ -4,4 +4,4 @@ uwaga wykorzystywanie danych nie zgodnych z prawem w kraju jest karane,
 uwaga nie ponosimy żadnej odpowiedzialności za to że Wy korzystacie z tych danych nie zgodnie z prawem, 
 
 
-Kontakt z nami na adres: iod@technova.int.pl
+Kontakt z nami na adres: iod@gitstudio.int.pl
